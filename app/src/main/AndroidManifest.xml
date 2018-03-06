@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.findmyelderly.findmyelderly">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="爸媽去哪兒"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBa2FPukpJpwZTM-F6rjdGhIXB8vkcCcog" />
+
+        <activity android:name=".MainActivity" />
+        <service android:name=".GeofenceTransitionsIntentService"/>
+        <activity android:name=".HelpActivity" />
+        <activity
+            android:name=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SignUpActivity"
+            android:label="@string/title_activity_sign_up"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MainActivity_Family"
+            android:label="@string/title_activity_main__family"/>
+
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+
+        <activity
+            android:name=".SignUpActivity_Elderly"
+            android:label="@string/title_activity_sign_up__elderly"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".FamilyActivity"
+            android:label="FamilyActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".Maps"
+            android:process=":maps" />
+
+        <activity
+            android:name=".EditActivity"
+            android:label="EditActivity"
+             />
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="MapsActivity">
+        </activity>
+
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANT_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".GeofenceTransitionsIntentService"/>
+    </application>
+
+
+
+</manifest>
