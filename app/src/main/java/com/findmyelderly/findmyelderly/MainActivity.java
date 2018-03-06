@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onResume() {
         super.onResume();
         registerReceiver(broadcastReceiver, new IntentFilter(Maps.str_receiver));
-		//addGeofence();
+		addGeofence();
     }
 
     @Override
