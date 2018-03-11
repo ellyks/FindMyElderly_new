@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,OnConnectionFailedListener,ResultCallback<Status>{
-
+    //TESTING LINE
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
