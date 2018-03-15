@@ -17,11 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -34,7 +31,6 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText accountEdit;
     private EditText passwordEdit;
     private Button signUpBtn;
-    private Button familyBtn;
     private FirebaseUser user;
     private String userId;
     private String editid;
@@ -61,7 +57,6 @@ public class SignUpActivity extends AppCompatActivity {
         passwordLayout.setErrorEnabled(true);
         accoutLayout.setErrorEnabled(true);
         signUpBtn = (Button) findViewById(R.id.signup_button);
-        familyBtn = (Button) findViewById(R.id.family);
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,12 +99,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        familyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SignUpActivity.this, FamilyActivity.class));
-            }
-        });
     }
 
 

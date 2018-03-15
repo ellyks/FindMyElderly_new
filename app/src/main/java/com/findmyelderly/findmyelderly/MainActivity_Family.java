@@ -42,8 +42,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 
 
 public class MainActivity_Family extends FragmentActivity implements
@@ -56,6 +59,10 @@ public class MainActivity_Family extends FragmentActivity implements
     private Button logout;
     private Button edit;
     private ImageButton buttonCurrent;
+    private Button buttons[] = new Button[9];
+    private Button buttonCurrent0;
+    private Button buttonCurrent1;
+    private Button buttonCurrent2;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -106,8 +113,13 @@ public class MainActivity_Family extends FragmentActivity implements
         edit = (Button) findViewById(R.id.button2);
         logout = (Button) findViewById(R.id.logout);
         buttonCurrent = (ImageButton) findViewById(R.id.buttonCurrent);
-        tt = (TextView) findViewById(R.id.tt);
+        buttons[0] = (Button) findViewById(R.id.buttonCurrent0);
+        buttons[1] = (Button) findViewById(R.id.buttonCurrent1);
+        buttons[2] = (Button) findViewById(R.id.buttonCurrent2);
+
+        //tt = (TextView) findViewById(R.id.tt);
         buttonCurrent.setOnClickListener(this);
+
 
         notification = new NotificationCompat.Builder(this);
         //notification.setAutoCancel(true);
@@ -136,6 +148,12 @@ public class MainActivity_Family extends FragmentActivity implements
 
     }
 
+    public int createID(){
+        Date now = new Date();
+        int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(now));
+        return id;
+    }
+
 
     private void checkElderlyBatteryLV(int batteryLV,String name){
         if(batteryLV<=40 && batteryLV%5 == 0){
@@ -160,8 +178,9 @@ public class MainActivity_Family extends FragmentActivity implements
                 notification.setContentIntent(pendingIntent);
 
                 //sending out notification
+                int id = createID();
                 NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-                nm.notify(uniqueID, notification.build());
+                nm.notify(id, notification.build());
 
 
                 //FCM notification
@@ -190,9 +209,13 @@ public class MainActivity_Family extends FragmentActivity implements
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             notification.setContentIntent(pendingIntent);
 
+
+
+
             //sending out notification
+            int id = createID();
             NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-            nm.notify(uniqueID2, notification.build());
+            nm.notify(id, notification.build());
 
 
             //FCM notification
@@ -234,8 +257,9 @@ public class MainActivity_Family extends FragmentActivity implements
             notification.setContentIntent(pendingIntent);
 
             //sending out notification
+            int id = createID();
             NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-            nm.notify(uniqueID3, notification.build());
+            nm.notify(id, notification.build());
 
 
             //FCM notification
@@ -288,48 +312,57 @@ public class MainActivity_Family extends FragmentActivity implements
         mQueryMF.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                long a=dataSnapshot.getChildrenCount();
+                String b="Children size: "+dataSnapshot.getChildrenCount();
+                Log.d(TAG,b);
+                int i=0;
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+
                     latitude = userSnapshot.child("latitude").getValue(Double.class);
                     longitude = userSnapshot.child("longitude").getValue(Double.class);
                     dateTime = userSnapshot.child("dateTime").getValue(String.class);
-                    address = getCompleteAddressString(latitude,longitude);
-                    home=userSnapshot.child("address").getValue(String.class);
+                    address = getCompleteAddressString(latitude, longitude);
+                    home = userSnapshot.child("address").getValue(String.class);
                     batteryLV = userSnapshot.child("batteryLV").getValue(Integer.class);
                     help = userSnapshot.child("help").getValue(Boolean.class);
-                    outGeo=userSnapshot.child("outGeo").getValue(Boolean.class);
-                    userName=userSnapshot.child("userName").getValue(String.class);
-                    radius=userSnapshot.child("radius").getValue(Float.class);
+                    outGeo = userSnapshot.child("outGeo").getValue(Boolean.class);
+                    userName = userSnapshot.child("userName").getValue(String.class);
+                    radius = userSnapshot.child("radius").getValue(Float.class);
 
+                    buttons[i].setText(userName);
 
-                }
+                    /*if(buttons[i].getText()==null){
+                        buttons[i].setVisibility(View.INVISIBLE);
+                    }*/
+
                 //String to display current latitude and longitude
                 //DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 //dateTime = df.format(dateTime);
-                checkHelp(help,userName);
-                checkGeo(outGeo,userName);
-                checkElderlyBatteryLV(batteryLV,userName);
+                checkHelp(help, userName);
+                checkGeo(outGeo, userName);
+                checkElderlyBatteryLV(batteryLV, userName);
 
 
                 //String msg = latitude + ", " + longitude+ ", last updated: "+dateTime;
-                String msg = address+"最近更新: "+dateTime +'\n' +"電池還餘: "+batteryLV+"%";
+                String msg = address + "最近更新: " + dateTime + '\n' + "電池還餘: " + batteryLV + "%";
                 String title = "現在位置";
-                if (userName==""){
-                    title = "老人"+title;
-                }else{
-                    title = userName+title;
+                if (userName == "") {
+                    title = "老人" + title;
+                } else {
+                    title = userName + title;
                 }
 
-                String snippet = address+'\n'+"最近更新: "+dateTime +'\n' +"電池還餘: "+batteryLV+"%";
-                tt.setText(msg);
+                String snippet = address + '\n' + "最近更新: " + dateTime + '\n' + "電池還餘: " + batteryLV + "%";
+                //tt.setText(msg);
                 //Creating a LatLng Object to store Coordinates
-                LatLng latLng = new LatLng(latitude, longitude);
+                final LatLng latLng = new LatLng(latitude, longitude);
+
+
                 //Adding marker to map
-                /*
-                if (m != null) {
-                    m.remove();
+                if(i==0){
+                    mMap.clear();
                 }
-                */
-                mMap.clear();
+
                 //add the custom maker label to the map
                 mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MainActivity_Family.this));
 
@@ -338,8 +371,8 @@ public class MainActivity_Family extends FragmentActivity implements
                         //.draggable(true) //Making the marker draggable
                         .title(title)
                         .snippet(snippet)
-                        );
-                Log.d(TAG,msg);
+                );
+                Log.d(TAG, msg);
                 label.showInfoWindow();
 
                 //add circle for geofencing
@@ -347,7 +380,7 @@ public class MainActivity_Family extends FragmentActivity implements
                 templat = result.latitude;
                 templon = result.longitude;
 
-                Circle circle=mMap.addCircle(new CircleOptions()
+                Circle circle = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(templat, templon))
                         .strokeColor(Color.BLUE)
                         .fillColor(0x220000FF)
@@ -359,8 +392,18 @@ public class MainActivity_Family extends FragmentActivity implements
 
                 //Animating the camera
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
-            }
 
+
+
+                 buttons[i].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            }
+                        });
+                    i++;
+            }
+        }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -382,9 +425,11 @@ public class MainActivity_Family extends FragmentActivity implements
     public LatLng getLocationFromAddress(String Address) {
         Geocoder coder = new Geocoder(this);
         LatLng point = null;
+        LatLng temp= new LatLng(22.316402,114.180341);
+
         try {
             List<Address> address = coder.getFromLocationName(Address,1);
-            if (address == null)
+            if (address.size() == 0)
                 return null;
             Address location = address.get(0);
             point = new LatLng(location.getLatitude(),location.getLongitude());
@@ -449,6 +494,20 @@ public class MainActivity_Family extends FragmentActivity implements
     protected void onResume() {
         super.onResume();
         getCurrentLocation();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
     }
 
 }

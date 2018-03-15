@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +28,8 @@ public class EditActivity extends AppCompatActivity {
     private float tempRadius=0;
     private String currentUserId;
     private com.google.firebase.database.Query mQueryMF;
+    private String eEmail = "";
+    private static String realeEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,6 @@ public class EditActivity extends AppCompatActivity {
         final EditText tempEdit6   = (EditText)findViewById(R.id.editRadius);
 
 
-
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,44 +57,62 @@ public class EditActivity extends AppCompatActivity {
                 tempFName=tempEdit4.getText().toString();
                 tempFTel=tempEdit5.getText().toString();
                 if(!tempEdit6.getText().toString().equals("")){
-                tempRadius=Float.parseFloat(tempEdit6.getText().toString());}
-                //get the current userid
-
-                mAuth = FirebaseAuth.getInstance();
-                user = mAuth.getCurrentUser();
-                currentUserId = user.getUid();
-
-                //mQueryMF = mDatabase.child("users").orderByChild("familyId").equalTo(currentUserId);
-
-                FirebaseDatabase.getInstance().getReference().child("edit").orderByChild("email").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                            elderlyId =dataSnapshot.child("elderlyId").getValue(String.class);
-
-                //save text in edittext into the firebase
-                if(!tempName.equals(""))
-                    mDatabase.child("users").child(elderlyId).child("userName").setValue(tempName);
-                if(!tempTel.equals(""))
-                    mDatabase.child("users").child(elderlyId).child("Tel").setValue(tempTel);
-                if(!tempAddress.equals(""))
-                    mDatabase.child("users").child(elderlyId).child("address").setValue(tempAddress);
-                        if(tempRadius!=0.0f)
-                            mDatabase.child("users").child(elderlyId).child("radius").setValue(tempRadius);
-
-                        if(!tempFName.equals(""))
-                            mDatabase.child("users").child(currentUserId).child("userName").setValue(tempFName);
-                        if(!tempFTel.equals(""))
-                            mDatabase.child("users").child(currentUserId).child("Tel").setValue(tempFTel);
-            }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                    tempRadius=Float.parseFloat(tempEdit6.getText().toString());}
+                eEmail = getElderlyEmail();
+                editInfo(eEmail,tempName,tempTel,tempAddress,tempFName,tempFTel,tempRadius);
                 startActivity(new Intent(EditActivity.this, MainActivity_Family.class));
-
     }
 });
+    }
+
+    public static void setElderlyEmail(String email){
+        realeEmail = email;
+    }
+
+    public String getElderlyEmail(){
+        return realeEmail;
+    }
+
+    public static void editInfo(String email,String name,String tel,String address, String fname,String ftel,float radius) {
+
+        //get the current userid
+        final String elderlyemail = email;
+        final String Aname = name;
+        final String Atel = tel;
+        final String Aaddress = address;
+        final String Afname = fname;
+        final String Aftel = ftel;
+        final float Aradius = radius;
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        FirebaseDatabase.getInstance().getReference().child("users").orderByChild("email").equalTo(elderlyemail).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    String elderlyId =childSnapshot.getKey();
+                    //save text in edittext into the firebase
+                    if (!Aname.equals(""))
+                        mDatabase.child("users").child(elderlyId).child("userName").setValue(Aname);
+                    if (!Atel.equals(""))
+                        mDatabase.child("users").child(elderlyId).child("Tel").setValue(Atel);
+                    if (!Aaddress.equals(""))
+                        mDatabase.child("users").child(elderlyId).child("address").setValue(Aaddress);
+                    if (Aradius != 0.0f)
+                        mDatabase.child("users").child(elderlyId).child("radius").setValue(Aradius);
+
+                    if (!Afname.equals(""))
+                        mDatabase.child("users").child(user.getUid()).child("userName").setValue(Afname);
+                    if (!Aftel.equals(""))
+                        mDatabase.child("users").child(user.getUid()).child("Tel").setValue(Aftel);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
     }
 }
 

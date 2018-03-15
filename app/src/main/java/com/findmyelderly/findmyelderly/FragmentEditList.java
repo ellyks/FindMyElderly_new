@@ -7,11 +7,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.findmyelderly.findmyelderly.Constant.Edit;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,8 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.findmyelderly.findmyelderly.Constant.Edit;
 
 
 /**
@@ -71,7 +69,7 @@ public class FragmentEditList extends Fragment implements View.OnClickListener{
         mPostList.setLayoutManager(mLayoutManager);
 
         //get database draft
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("edit");
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("users");
         mQueryFollowingPost=mDatabase.orderByChild("familyId").equalTo(user.getUid());
         //get shopping cart and like
 //        mDatabaseAdd=FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("shoppingCart");
@@ -122,4 +120,6 @@ public class FragmentEditList extends Fragment implements View.OnClickListener{
         });
 
     }
+
+
 }

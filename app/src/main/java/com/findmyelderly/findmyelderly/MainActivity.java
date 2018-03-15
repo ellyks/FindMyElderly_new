@@ -1,5 +1,7 @@
 package com.findmyelderly.findmyelderly;
 
+
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -136,19 +139,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startService(new Intent(MainActivity.this,Maps.class));
        /* if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this, // Activity
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_FINE_LOCATION);*/
+                != PackageManager.PERMISSION_GRANTED) {*/
+        ActivityCompat.requestPermissions(
+                this, // Activity
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                MY_PERMISSIONS_REQUEST_FINE_LOCATION);
 
         mGeofenceList = new ArrayList<Geofence>();
 
         populateGeofenceList();
         buildGoogleApiClient();
-
-
-
 
     }
 
@@ -240,13 +240,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+
     public LatLng getLocationFromAddress(String Address) {
         Geocoder coder = new Geocoder(this);
         LatLng point = null;
+        LatLng temp= new LatLng(22.316402,114.180341);
+
         try {
             List<Address> address = coder.getFromLocationName(Address,1);
-            if (address == null)
-                return null;
+            if (address.size() == 0)
+                return temp;
             Address location = address.get(0);
             point = new LatLng(location.getLatitude(),location.getLongitude());
         } catch (IOException e) {
@@ -254,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         return point;
     }
-
 
     protected synchronized void buildGoogleApiClient(){
         mGoogleApiClient=new GoogleApiClient.Builder(this).addOnConnectionFailedListener(this).

@@ -123,7 +123,7 @@ public class SignUpActivity_Elderly extends AppCompatActivity {
                 this.familyId = "";
                 this.Help = false;
                 this.outGeo = false;
-                this.radius = 1609; //1 miles
+                this.radius = 50; //1 miles
                 this.latitude = 22.316362;
                 this.longitude = 114.180287;
                 this.dateTime = "N/A";
@@ -157,7 +157,7 @@ public class SignUpActivity_Elderly extends AppCompatActivity {
                 return Help;
             }
 
-            public boolean getoutGeo() {
+            public boolean getOutGeo() {
                 return outGeo;
             }
 
@@ -227,13 +227,13 @@ public class SignUpActivity_Elderly extends AppCompatActivity {
 
     private void writeNewUser(String email) {
         final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final String pushkey = mDatabaseEdit.getKey();
+        //final String pushkey = mDatabaseEdit.getKey();
         User user = new User(email);
         Edit edit = new Edit(email);
         Log.d("id", userId);
         mDatabase.child("users").child(userId).setValue(user);
-        mDatabase.child("edit").child(pushkey).setValue(edit);
-        mDatabase.child("edit").child(pushkey).child("editId").setValue(pushkey);
+        //mDatabase.child("edit").child(pushkey).setValue(edit);
+       // mDatabase.child("edit").child(pushkey).child("editId").setValue(pushkey);
     }
 
 
