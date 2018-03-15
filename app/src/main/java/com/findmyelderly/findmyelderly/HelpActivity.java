@@ -282,6 +282,69 @@ public class HelpActivity extends AppCompatActivity {
 
     }
 
+    public static class Geo {
+
+
+        private String familyId;
+
+        private String elderlyId;
+
+        private boolean outGeo;
+
+
+
+
+        public Geo() {
+
+            this.familyId = "";
+            this.elderlyId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            this.outGeo = false;
+
+        }
+
+
+        public String getElderlyId() {
+            return elderlyId;
+        }
+        public String getFamilyId() {
+            return familyId;
+        }
+
+
+
+    }
+
+    public static class battery {
+
+
+        private String familyId;
+
+        private String elderlyId;
+
+        private String batteryLV;
+
+
+
+
+        public battery() {
+
+            this.familyId = "";
+            this.elderlyId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            this.batteryLV = "";
+
+        }
+
+
+        public String getElderlyId() {
+            return elderlyId;
+        }
+        public String getFamilyId() {
+            return familyId;
+        }
+
+
+
+    }
 
 
 

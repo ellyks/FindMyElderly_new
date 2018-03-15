@@ -107,7 +107,7 @@ public class FamilyActivity extends AppCompatActivity {
                                     writeNewUser(account);
                                     user = mAuth.getCurrentUser();
                                     userId = user.getUid();
-                                    mDatabase.child("users").orderByChild("email").equalTo(familyac).addValueEventListener(new ValueEventListener() {
+                                    mDatabase.child("users").orderByChild("email").equalTo(familyac).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
@@ -116,6 +116,7 @@ public class FamilyActivity extends AppCompatActivity {
 
 
                                             mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("familyId").setValue(userId);
+                                            mDatabase.child("users").child(userId).child("elderlyId").push().setValue(user.getUid());
 
                                             //mDatabase.child("edit").orderByChild("elderlyId").equalTo(SignUpActivity_Elderly.temp_elderlyId).addValueEventListener(new ValueEventListener() {
                                             //@Override
