@@ -116,7 +116,7 @@ public class FamilyActivity extends AppCompatActivity {
 
 
                                             mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("familyId").setValue(userId);
-                                            mDatabase.child("users").child(userId).child("elderlyId").push().setValue(user.getUid());
+                                            //mDatabase.child("users").child(userId).child("elderlyId").push().setValue(user.getUid());
 
                                             //mDatabase.child("edit").orderByChild("elderlyId").equalTo(SignUpActivity_Elderly.temp_elderlyId).addValueEventListener(new ValueEventListener() {
                                             //@Override
