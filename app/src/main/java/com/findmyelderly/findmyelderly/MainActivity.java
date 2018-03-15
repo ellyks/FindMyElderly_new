@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         POPAYAN_LANDMARKS.put("", new LatLng(22.3751429, 114.1115573));}
 
     /*
-    My methods
+    My methodsbcbcbcbc
      */
 
 

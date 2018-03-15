@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import com.bumptech.glide.Glide;
-
+//
 public class HelpActivity extends AppCompatActivity {
     private ImageButton addButton;
     private ImageView family;
