@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
+//import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,15 +49,19 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,OnConnectionFailedListener,ResultCallback<Status>{
 
-
+    private String TAG = "MainActivity";
 
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
-    protected GoogleApiClient mGoogleApiClient;
+
+    private GoogleApiClient mGoogleApiClient;
+    //protected GeofencingClient mGeofencingClient;
+
     protected ArrayList<Geofence> mGeofenceList;
 
+    private ImageButton verbalButton;
     private ImageButton helpButton;
     private Button logout;
     private Button add;
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         helpButton = (ImageButton) findViewById(R.id.help);
         homeButton = (ImageButton) findViewById(R.id.home);
+        verbalButton = (ImageButton) findViewById(R.id.verbal);
         logout = (Button) findViewById(R.id.logout);
         //add = (Button) findViewById(R.id.geofence);
         cc = (TextView) findViewById(R.id.cc);
@@ -137,6 +143,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
 
+        verbalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SpeechActivity.class));
+            }
+        });
+
 
         startService(new Intent(MainActivity.this,Maps.class));
        /* if (ContextCompat.checkSelfPermission(this,
@@ -148,10 +161,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 MY_PERMISSIONS_REQUEST_FINE_LOCATION);
 
         mGeofenceList = new ArrayList<Geofence>();
-
         populateGeofenceList();
         buildGoogleApiClient();
-
+        addGeofence();
     }
 
     @Override
@@ -265,18 +277,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 addConnectionCallbacks(this).
                 addApi(LocationServices.API).
                 build();
-
-
     }
+
     private PendingIntent getGeofencePendingIntent(){
         Intent intent=new Intent (this,GeofenceTransitionsIntentService.class);
         return PendingIntent.getService(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public void addGeofence(){//Geofences button Handler
+        Log.w(TAG,"called la");
         if(!mGoogleApiClient.isConnected()){
-            //Toast.makeText(this, getString(R.string.not_conected), Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, getString(R.string.not_conected), Toast.LENGTH_SHORT).show();
+            return ;
         }
         try {
             LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, getGeofencingRequest(), getGeofencePendingIntent()).setResultCallback(this);
@@ -352,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onResume() {
         super.onResume();
         registerReceiver(broadcastReceiver, new IntentFilter(Maps.str_receiver));
-		addGeofence();
+		//addGeofence();
     }
 
     @Override
