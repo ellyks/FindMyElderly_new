@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import com.bumptech.glide.Glide;
-//
+
 public class HelpActivity extends AppCompatActivity {
     private ImageButton addButton;
     private ImageView family;
@@ -59,6 +59,12 @@ public class HelpActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     public String phoneno;
 
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mDatabaseHelp = ref.child("help").push();
+
+    private String familyid = "";
+    private String name = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,8 @@ public class HelpActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
         userId = user.getUid();
         currentUserId = user.getUid();
+
+
 
 
         addButton = (ImageButton) findViewById(R.id.add);
@@ -88,7 +96,7 @@ public class HelpActivity extends AppCompatActivity {
         family.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabase.child("users").child(userId).child("help").setValue(true);
+                getfamilyId();
                 Toast.makeText(HelpActivity.this, "已發送求救訊息", Toast.LENGTH_LONG).show();
                 calling();
             }
@@ -97,7 +105,7 @@ public class HelpActivity extends AppCompatActivity {
         police.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //callPolice();
+                callPolice();
             }
         });
 
@@ -160,6 +168,31 @@ public class HelpActivity extends AppCompatActivity {
     }
 
 
+
+    public void getfamilyId(){
+        final String pushkey = mDatabaseHelp.getKey();
+        Help help = new Help();
+        mDatabase.child("help").child(pushkey).setValue(help);
+        mDatabase.child("users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                familyid = dataSnapshot.child("familyId").getValue(String.class);
+                name = dataSnapshot.child("userName").getValue(String.class);
+
+                mDatabase.child("help").child(pushkey).child("familyId").setValue(familyid);
+                mDatabase.child("help").child(pushkey).child("username").setValue(name);
+                mDatabase.child("help").child(pushkey).child("help").setValue(true);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+
+
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
@@ -192,7 +225,7 @@ public class HelpActivity extends AppCompatActivity {
                                     Log.d("link", uri.toString());
                                     //put link to database
 
-                                            mDatabase.child("users").child(userId).child("familyicon").setValue(uri.toString());
+                                    mDatabase.child("users").child(userId).child("familyicon").setValue(uri.toString());
 
 
                                 }
@@ -215,6 +248,38 @@ public class HelpActivity extends AppCompatActivity {
         else {
             //you can display an error toast
         }
+    }
+
+    public static class Help {
+
+
+        private String familyId;
+
+        private String elderlyId;
+
+        private boolean help;
+
+
+
+
+        public Help() {
+
+            this.familyId = "";
+            this.elderlyId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            this.help = false;
+
+        }
+
+
+        public String getElderlyId() {
+            return elderlyId;
+        }
+        public String getFamilyId() {
+            return familyId;
+        }
+
+
+
     }
 
 

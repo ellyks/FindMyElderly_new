@@ -191,17 +191,14 @@ public class MainActivity_Family extends FragmentActivity implements
         }
     }
 
-    private void checkHelp(boolean seekHelp,String name) {
-        if (name== ""){
-            name="長者";
-        }
+    private void checkHelp(String name,boolean Help) {
 
-        if (seekHelp == true) {
+        if(Help==true) {
             notification.setSmallIcon(R.drawable.ic_clock);
-            notification.setTicker(name+"需要幫助");
+            notification.setTicker(name + "需要幫助");
             notification.setWhen(System.currentTimeMillis());
-            notification.setContentTitle(name+"需要你的幫助");
-            notification.setContentText(name+"迷路了!");
+            notification.setContentTitle(name + "需要你的幫助");
+            notification.setContentText(name + "迷路了!");
             //Notification ElderlyLowBatteryAlert = new Notification();
 
             //intent to get to the page
@@ -209,34 +206,47 @@ public class MainActivity_Family extends FragmentActivity implements
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             notification.setContentIntent(pendingIntent);
 
-
-
-
             //sending out notification
-            int id = createID();
-            NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-            nm.notify(id, notification.build());
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.notify(uniqueID2, notification.build());
 
 
             //FCM notification
             String token = FirebaseInstanceId.getInstance().getToken();
             Toast.makeText(MainActivity_Family.this, "你有一則新通知!", Toast.LENGTH_SHORT).show();
-            Log.w("",token);
-            mDatabase.child("users").child(currentUserId).child("elderlyId").addValueEventListener(new ValueEventListener() {
+            Log.w("", token);
+
+
+            mDatabase.child("help").orderByChild("familyId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    elderlyId =dataSnapshot.getValue(String.class);
-                    mDatabase.child("users").child(elderlyId).child("help").setValue(false);
+                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                        appleSnapshot.getRef().removeValue();
+                    }
 
                 }
 
-                @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+
         }
     }
 
+    public void ckHelp(){
+        mDatabase.child("help").orderByChild("familyId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    userName = userSnapshot.child("username").getValue(String.class);
+                    help = userSnapshot.child("help").getValue(Boolean.class);
+                }
+                checkHelp(userName,help);
+            }
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
     private void checkGeo(boolean out,String name) {
         if (name== ""){
@@ -338,7 +348,7 @@ public class MainActivity_Family extends FragmentActivity implements
                 //String to display current latitude and longitude
                 //DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 //dateTime = df.format(dateTime);
-                checkHelp(help, userName);
+                //checkHelp(help, userName);
                 checkGeo(outGeo, userName);
                 checkElderlyBatteryLV(batteryLV, userName);
 
@@ -430,7 +440,7 @@ public class MainActivity_Family extends FragmentActivity implements
         try {
             List<Address> address = coder.getFromLocationName(Address,1);
             if (address.size() == 0)
-                return null;
+                return temp;
             Address location = address.get(0);
             point = new LatLng(location.getLatitude(),location.getLongitude());
         } catch (IOException e) {
@@ -494,6 +504,7 @@ public class MainActivity_Family extends FragmentActivity implements
     protected void onResume() {
         super.onResume();
         getCurrentLocation();
+        ckHelp();
     }
 
     @Override
