@@ -3,27 +3,29 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <Button
-        android:layout_centerInParent="true"
         android:text="登入"
         android:id="@+id/login"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/sign_up"
+        android:layout_alignStart="@+id/sign_up" />
 
     <Button
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/login"
         android:text="註冊"
         android:id="@+id/sign_up"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:text="已有家人"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/haveFamily"
-        android:layout_marginTop="23dp"
         android:layout_below="@+id/sign_up"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/sign_up"
+        android:layout_alignStart="@+id/sign_up" />
 
 </RelativeLayout>

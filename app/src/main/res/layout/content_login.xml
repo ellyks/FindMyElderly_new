@@ -13,6 +13,7 @@
             android:hint="電郵地址"
             android:textSize="15sp"
             android:textColor="#000000"
+            android:maxLines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.design.widget.TextInputLayout>
@@ -26,6 +27,7 @@
             android:hint="密碼"
             android:textSize="15sp"
             android:textColor="#000000"
+            android:maxLines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.design.widget.TextInputLayout>
