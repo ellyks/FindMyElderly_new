@@ -248,6 +248,21 @@ public class MainActivity_Family extends FragmentActivity implements
         });
     }
 
+    public void ckGeo(){
+        mDatabase.child("geo").orderByChild("familyId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    userName = userSnapshot.child("username").getValue(String.class);
+                    outGeo = userSnapshot.child("outGeo").getValue(Boolean.class);
+                }
+                checkGeo(outGeo,userName);
+            }
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
     private void checkGeo(boolean out,String name) {
         if (name== ""){
             name="長者";
@@ -276,18 +291,19 @@ public class MainActivity_Family extends FragmentActivity implements
             String token = FirebaseInstanceId.getInstance().getToken();
             Toast.makeText(MainActivity_Family.this, "你有一則新通知!", Toast.LENGTH_SHORT).show();
             Log.w("",token);
-            mDatabase.child("users").child(currentUserId).child("elderlyId").addValueEventListener(new ValueEventListener() {
+            mDatabase.child("geo").orderByChild("familyId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    elderlyId =dataSnapshot.getValue(String.class);
-                    mDatabase.child("users").child(elderlyId).child("outGeo").setValue(false);
+                    for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                        appleSnapshot.getRef().removeValue();
+                    }
 
                 }
 
-                @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+
         }
     }
 
@@ -505,6 +521,7 @@ public class MainActivity_Family extends FragmentActivity implements
         super.onResume();
         getCurrentLocation();
         ckHelp();
+        ckGeo();
     }
 
     @Override

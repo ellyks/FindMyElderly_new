@@ -16,8 +16,11 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,13 @@ public class GeofenceTransitionsIntentService extends IntentService{
     private FirebaseUser user;
     private FirebaseAuth mAuth;
 
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mDatabaseGeo = ref.child("geo").push();
+
+    private String familyid = "";
+    private String usrname = "";
+    private String currentUserId;
+
 
 
 
@@ -45,6 +55,7 @@ public class GeofenceTransitionsIntentService extends IntentService{
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+        currentUserId = user.getUid();
     }
 
     @Override
@@ -59,24 +70,46 @@ public class GeofenceTransitionsIntentService extends IntentService{
         int geofenceTransition=geofencingEvent.getGeofenceTransition();
 
         if(geofenceTransition== Geofence.GEOFENCE_TRANSITION_ENTER){
-            mDatabase.child("users").child(user.getUid()).child("outGeo").setValue(false);
+            //checkGeo();
         }
         if(geofenceTransition== Geofence.GEOFENCE_TRANSITION_EXIT) {
 
-            mDatabase.child("users").child(user.getUid()).child("outGeo").setValue(true);
+            checkGeo();
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             String geofenceTransitionDetails = getGeofenceTransitionDetails(this, geofenceTransition, triggeringGeofences);
             sendNotification(geofenceTransitionDetails);
             Log.i(name, geofenceTransitionDetails);
         }else {
-        Log.e(name,getString(R.string.unknown_geofence_error_transition_type)+geofenceTransition);
+            Log.e(name,getString(R.string.unknown_geofence_error_transition_type)+geofenceTransition);
 
 
-        }
+        }}
 
 
+    public void checkGeo(){
+        final String pushkey = mDatabaseGeo.getKey();
+        HelpActivity.Geo geo = new HelpActivity.Geo();
+        mDatabase.child("geo").child(pushkey).setValue(geo);
+        mDatabase.child("users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                familyid = dataSnapshot.child("familyId").getValue(String.class);
+                name = dataSnapshot.child("userName").getValue(String.class);
+
+                mDatabase.child("geo").child(pushkey).child("familyId").setValue(familyid);
+                mDatabase.child("geo").child(pushkey).child("username").setValue(name);
+                mDatabase.child("geo").child(pushkey).child("outGeo").setValue(true);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
+
+
+
     private String getGeofenceTransitionDetails(Context context,int geofenceTransition,List<Geofence> triggeringGeofences){
         String geofenceTransitionString=getTransitionString(geofenceTransition);
         ArrayList triggeringGeofencesIdsList= new ArrayList();
@@ -104,10 +137,11 @@ public class GeofenceTransitionsIntentService extends IntentService{
         PendingIntent notificationPendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder=new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.drawable.ic_clock).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_clock))
-        .setColor(Color.RED).setContentTitle(notificationDetails).setContentText(getString((R.string.geofence_transition_notification))).setContentIntent(notificationPendingIntent);
+                .setColor(Color.RED).setContentTitle(notificationDetails).setContentText(getString((R.string.geofence_transition_notification))).setContentIntent(notificationPendingIntent);
         builder.setAutoCancel(true);
         NotificationManager mNotificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0,builder.build());
 
     }
+
 }
