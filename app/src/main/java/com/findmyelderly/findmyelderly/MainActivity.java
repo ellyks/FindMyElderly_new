@@ -55,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mDatabaseBattery = ref.child("battery").push();
+
+    private String familyid = "";
+    private String name = "";
+    private int batteryLv=0;
+
 
     private GoogleApiClient mGoogleApiClient;
     //protected GeofencingClient mGeofencingClient;
@@ -324,8 +331,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             user = mAuth.getCurrentUser();
 
             batteryLV.setText("現在電力："+level+"%\n");
-            if (!Integer.valueOf(level).equals(null)){
+            if (!Integer.valueOf(level).equals(null)&&(level<=40 && level%5==0)){
                 mDatabase.child("users").child(user.getUid()).child("batteryLV").setValue(level);
+                getBattery(level);
             }
 
             if (level<=100 && level%5 == 0){
@@ -333,6 +341,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     };
 
+    public void getBattery(int level){
+        final int llevel = level;
+        final String pushkey = mDatabaseBattery.getKey();
+        HelpActivity.battery battery = new HelpActivity.battery();
+        mDatabase.child("battery").child(pushkey).setValue(battery);
+        mDatabase.child("users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                familyid = dataSnapshot.child("familyId").getValue(String.class);
+                name = dataSnapshot.child("userName").getValue(String.class);
+
+                mDatabase.child("battery").child(pushkey).child("familyId").setValue(familyid);
+                mDatabase.child("battery").child(pushkey).child("username").setValue(name);
+                mDatabase.child("battery").child(pushkey).child("batteryLv").setValue(llevel);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override

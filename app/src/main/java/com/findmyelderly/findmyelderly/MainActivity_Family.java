@@ -87,6 +87,7 @@ public class MainActivity_Family extends FragmentActivity implements
     private double templat;
     private double templon;
     private String home="";
+    private int batterylv;
 
     //Our Map
     private GoogleMap mMap;
@@ -187,9 +188,39 @@ public class MainActivity_Family extends FragmentActivity implements
                 String token = FirebaseInstanceId.getInstance().getToken();
                 Toast.makeText(MainActivity_Family.this, "你有一則新通知", Toast.LENGTH_SHORT).show();
                 Log.w("",token);
+
+                mDatabase.child("battery").orderByChild("familyId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                            appleSnapshot.getRef().removeValue();
+                        }
+
+                    }
+
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+            }
             }
         }
+
+    public void ckBattery(){
+        mDatabase.child("battery").orderByChild("familyId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    userName = userSnapshot.child("username").getValue(String.class);
+                    batterylv = userSnapshot.child("batteryLv").getValue(Integer.class);
+                }
+                checkElderlyBatteryLV(batterylv,userName);
+            }
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
+
 
     private void checkHelp(String name,boolean Help) {
 
@@ -522,6 +553,7 @@ public class MainActivity_Family extends FragmentActivity implements
         getCurrentLocation();
         ckHelp();
         ckGeo();
+        ckBattery();
     }
 
     @Override

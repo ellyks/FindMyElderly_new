@@ -98,14 +98,14 @@ public class HelpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getfamilyId();
                 Toast.makeText(HelpActivity.this, "已發送求救訊息", Toast.LENGTH_LONG).show();
-                calling();
+                //calling();
             }
         });
 
         police.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callPolice();
+                //callPolice();
             }
         });
 
