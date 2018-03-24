@@ -145,8 +145,8 @@ public class HelpActivity extends AppCompatActivity {
     }
 
     public void callPolice(){
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + 999));
-        startActivity(intent);
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" ));
+        //startActivity(intent);
     }
 
     public void calling(){

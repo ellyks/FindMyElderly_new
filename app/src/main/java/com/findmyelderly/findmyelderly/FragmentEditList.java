@@ -1,6 +1,8 @@
 package com.findmyelderly.findmyelderly;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.findmyelderly.findmyelderly.Constant.Edit;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +43,7 @@ public class FragmentEditList extends Fragment implements View.OnClickListener{
     private boolean mProcessAdd=false;
     private boolean mProcessLike=false;
     private DatabaseReference mDatabaseAdd;
+    private Button back;
     private DatabaseReference mDatabaseLike;
     private List<String> mDatabaseAddedPost;
     private Toolbar myToolbar;
@@ -52,7 +56,19 @@ public class FragmentEditList extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View rootview = inflater.inflate(R.layout.fragment_editlist, container, false);
+        back = (Button) rootview.findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getActivity(), MainActivity_Family.class);
+                startActivity(i);
+                ((Activity) getActivity()).overridePendingTransition(0,0);
+            }
+        });
         return rootview;
     }
 
@@ -61,7 +77,6 @@ public class FragmentEditList extends Fragment implements View.OnClickListener{
         //getting view
         mPostList=(RecyclerView)getView().findViewById(R.id.post_list);
         mPostList.setHasFixedSize(true);
-
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
