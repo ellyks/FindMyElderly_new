@@ -2,6 +2,7 @@ package com.findmyelderly.findmyelderly;
 
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +15,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private ImageButton verbalButton;
     private ImageButton helpButton;
-    private Button logout;
+    //private Button logout;
     private Button add;
     private ImageButton homeButton;
     private Button map;
@@ -105,10 +108,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
+
         helpButton = (ImageButton) findViewById(R.id.help);
         homeButton = (ImageButton) findViewById(R.id.home);
         verbalButton = (ImageButton) findViewById(R.id.verbal);
-        logout = (Button) findViewById(R.id.logout);
+        //logout = (Button) findViewById(R.id.logout);
         //add = (Button) findViewById(R.id.geofence);
         cc = (TextView) findViewById(R.id.cc);
 
@@ -129,17 +136,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, HelpActivity.class));
-            }
-        });
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopService(new Intent(MainActivity.this,Maps.class));
-                unregisterReceiver(broadcastReceiver);
-                unregisterReceiver(batteryInformationReceiver);
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
             }
         });
 
@@ -409,6 +405,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startActivity(startMain);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.mainctivity_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.logout){
+            //Toast.makeText(this,"Clicked lgout",Toast.LENGTH_SHORT).show();
+            stopService(new Intent(MainActivity.this,Maps.class));
+            unregisterReceiver(broadcastReceiver);
+            unregisterReceiver(batteryInformationReceiver);
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
 

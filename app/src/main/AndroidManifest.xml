@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBa2FPukpJpwZTM-F6rjdGhIXB8vkcCcog" />
@@ -24,6 +25,8 @@
         <activity android:name=".MainActivity"
             android:allowBackup="true"/>
         <service android:name=".GeofenceTransitionsIntentService"/>
+
+
         <activity android:name=".HelpActivity" />
         <activity
             android:name=".HomeActivity"
@@ -44,7 +47,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity_Family"
-            android:label="@string/title_activity_main__family"/>
+            android:label="爸媽去那兒（家人版）"
+            android:allowBackup="true"/>
 
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

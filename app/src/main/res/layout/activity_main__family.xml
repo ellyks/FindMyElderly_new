@@ -1,18 +1,20 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-    android:id="@+id/main_container"
-tools:context=".MainActivity_Family">
+<?xml version="1.0" encoding="utf-8"?>
 
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.findmyelderly.findmyelderly.MainActivity_Family" />
+    tools:context=".MainActivity_Family">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.findmyelderly.findmyelderly.MainActivity_Family" />
 
 
     <LinearLayout
@@ -26,53 +28,25 @@ tools:context=".MainActivity_Family">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#cc3b60a7"
-            android:orientation="horizontal"
-            android:layout_weight="0.03">
-
-            <ImageButton
-                android:id="@+id/buttonCurrent"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="15dp"
-                android:background="@drawable/current" />
+            android:orientation="horizontal">
 
             <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/buttonCurrent0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/buttonCurrent1"
-                android:layout_weight="1" />
-
-            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Button
                 android:id="@+id/buttonCurrent2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/button2"
-                android:text="編輯"
-                android:layout_height="50dp"
-                android:layout_width="60dp" />
-
-            <Button
-                android:id="@+id/logout"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_toEndOf="@+id/main_info"
-                android:layout_toRightOf="@+id/main_info"
-                android:text="登出"
-                android:layout_height="50dp"
-                android:layout_width="60dp" />
 
 
         </LinearLayout>

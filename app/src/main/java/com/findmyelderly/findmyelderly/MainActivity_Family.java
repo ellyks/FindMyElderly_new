@@ -14,7 +14,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -49,16 +52,13 @@ import java.util.Locale;
 
 
 
-public class MainActivity_Family extends FragmentActivity implements
+public class MainActivity_Family extends AppCompatActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMarkerDragListener,
         View.OnClickListener {
 
-    private Button logout;
-    private Button edit;
-    private ImageButton buttonCurrent;
     private Button buttons[] = new Button[9];
     private Button buttonCurrent0;
     private Button buttonCurrent1;
@@ -89,6 +89,16 @@ public class MainActivity_Family extends FragmentActivity implements
     private String home="";
     private int batterylv;
 
+    private Menu menu;
+    private MenuItem elderly[] = new MenuItem[3];
+    /*
+    private static final int ELDERLY1 = Menu.FIRST;
+    private static final int ELDERLY2 = Menu.FIRST + 1;
+    private static final int ELDERLY3 = Menu.FIRST + 2;
+    private static final int MENU_EDIT = Menu.FIRST + 3;
+    private static final int MENU_LOGOUT = Menu.FIRST + 4;
+    */
+
     //Our Map
     private GoogleMap mMap;
 
@@ -111,42 +121,21 @@ public class MainActivity_Family extends FragmentActivity implements
         user = mAuth.getCurrentUser();
         currentUserId = user.getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        edit = (Button) findViewById(R.id.button2);
-        logout = (Button) findViewById(R.id.logout);
-        buttonCurrent = (ImageButton) findViewById(R.id.buttonCurrent);
+        //edit = (Button) findViewById(R.id.button2);
+        //logout = (Button) findViewById(R.id.logout);
+        //buttonCurrent = (ImageButton) findViewById(R.id.buttonCurrent);
         buttons[0] = (Button) findViewById(R.id.buttonCurrent0);
         buttons[1] = (Button) findViewById(R.id.buttonCurrent1);
         buttons[2] = (Button) findViewById(R.id.buttonCurrent2);
 
-        //tt = (TextView) findViewById(R.id.tt);
-        buttonCurrent.setOnClickListener(this);
+        //elderly[0] = menu.findItem(Menu.FIRST);
 
+
+        //tt = (TextView) findViewById(R.id.tt);
+        //buttonCurrent.setOnClickListener(this);
 
         notification = new NotificationCompat.Builder(this);
         //notification.setAutoCancel(true);
-
-
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity_Family.this, HomeActivity.class));
-            }
-        });
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                fragment = new FragmentEditList();
-                FragmentManager manager = getSupportFragmentManager();
-                final FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.main_container, fragment).commit();
-            }
-        });
-
-
     }
 
     public int createID(){
@@ -154,7 +143,6 @@ public class MainActivity_Family extends FragmentActivity implements
         int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(now));
         return id;
     }
-
 
     private void checkElderlyBatteryLV(int batteryLV,String name){
         if(batteryLV<=40 && batteryLV%5 == 0){
@@ -220,7 +208,6 @@ public class MainActivity_Family extends FragmentActivity implements
             }
         });
     }
-
 
     private void checkHelp(String name,boolean Help) {
 
@@ -338,7 +325,6 @@ public class MainActivity_Family extends FragmentActivity implements
         }
     }
 
-
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -369,10 +355,11 @@ public class MainActivity_Family extends FragmentActivity implements
         mQueryMF.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long a=dataSnapshot.getChildrenCount();
+                //long a=dataSnapshot.getChildrenCount();
                 String b="Children size: "+dataSnapshot.getChildrenCount();
                 Log.d(TAG,b);
-                int i=0;
+                int i =0;
+
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 
                     latitude = userSnapshot.child("latitude").getValue(Double.class);
@@ -388,17 +375,28 @@ public class MainActivity_Family extends FragmentActivity implements
 
                     buttons[i].setText(userName);
 
-                    /*if(buttons[i].getText()==null){
-                        buttons[i].setVisibility(View.INVISIBLE);
-                    }*/
+                    //menu.findItem(R.id.e1).setTitle(userName);
+
+                    /*
+                    elderly[i].setTitle(userName);
+                    if(elderly[i].getTitle() == null){
+                        elderly[i].setVisible(false).setEnabled(false);
+                    }
+                    */
+                    //menu.findItem(R.id.tempElderly).setTitle(userName);
+                    //buttons[i].setText(userName);
+
+                    if(buttons[i].getText()==null){
+                        buttons[i].setVisibility(View.GONE);
+                    }
 
                 //String to display current latitude and longitude
                 //DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 //dateTime = df.format(dateTime);
                 //checkHelp(help, userName);
+
                 checkGeo(outGeo, userName);
                 checkElderlyBatteryLV(batteryLV, userName);
-
 
                 //String msg = latitude + ", " + longitude+ ", last updated: "+dateTime;
                 String msg = address + "最近更新: " + dateTime + '\n' + "電池還餘: " + batteryLV + "%";
@@ -449,7 +447,16 @@ public class MainActivity_Family extends FragmentActivity implements
 
                 //Animating the camera
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+                /*
+                elderly[i].setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            return true;
+                        }
+                });
+                */
 
 
                  buttons[i].setOnClickListener(new View.OnClickListener() {
@@ -458,8 +465,16 @@ public class MainActivity_Family extends FragmentActivity implements
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                             }
                         });
+
                     i++;
+
             }
+            for(int a =0; a < 3; a++){
+                    if(buttons[a].getText() == "" || buttons[a].getText() == null){
+                        buttons[a].setVisibility(View.GONE);
+                    }
+            }
+
         }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -495,7 +510,6 @@ public class MainActivity_Family extends FragmentActivity implements
         }
         return point;
     }
-
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -542,10 +556,8 @@ public class MainActivity_Family extends FragmentActivity implements
 
     @Override
     public void onClick(View v) {
-        if (v == buttonCurrent) {
-            getCurrentLocation();
-        }
     }
+
 
     @Override
     protected void onResume() {
@@ -570,4 +582,44 @@ public class MainActivity_Family extends FragmentActivity implements
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.familymainactivity_menu,menu);
+        //this.menu = menu;
+        return true;
+    }
+
+
+
+    /*
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+
+        menu.add(0,MENU_EDIT,Menu.NONE,R.string.edit);
+        menu.add(0,MENU_LOGOUT,Menu.NONE,R.string.logout);
+        this.menu = menu;
+        return super.onPrepareOptionsMenu(menu);
+    }
+    */
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.edit:
+                fragment = new FragmentEditList();
+                FragmentManager manager = getSupportFragmentManager();
+                final FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.main_container, fragment).commit();
+                break;
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(MainActivity_Family.this, HomeActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
