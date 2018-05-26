@@ -184,15 +184,22 @@ public class SpeechActivity extends AppCompatActivity {
     }
 
     private void speechStrAnalyze(String inputStr){
-        if(inputStr.contains("屋企")){
-            Log.w(TAG,"have string : 屋企");
-            startActivity(new Intent(SpeechActivity.this, MapsActivity.class));
-        }else{
-            if (inputStr.contains("回家")){
-                Log.w(TAG,"have string : 回家");
+
+        if(inputStr.contains("救命")&&(inputStr.contains("回家"))||(inputStr.contains("屋企"))){
+            if(!((inputStr.contains("唔"))||(inputStr.contains("不")))){
                 startActivity(new Intent(SpeechActivity.this, MapsActivity.class));
+            }
+        }else{
+            if(inputStr.contains("救命")) {
+                if(!((inputStr.contains("唔"))||(inputStr.contains("不")))){
+                    startActivity(new Intent(SpeechActivity.this, HelpActivity.class));
+                }
+            }
+            if((inputStr.contains("屋企"))||(inputStr.contains("回家"))) {
+                if (!((inputStr.contains("唔")) || (inputStr.contains("不")))) {
+                    startActivity(new Intent(SpeechActivity.this, MapsActivity.class));
+                }
             }
         }
     }
-
 }

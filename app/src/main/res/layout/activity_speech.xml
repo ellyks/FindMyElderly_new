@@ -26,8 +26,9 @@
                 android:id="@+id/status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="listening..."
+                android:text="你可以對著我講回家，返屋企，或者救命"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textSize="24sp"
                 android:visibility="visible"
                 tools:visibility="visible" />
 

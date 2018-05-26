@@ -98,7 +98,7 @@ public class HelpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getfamilyId();
                 Toast.makeText(HelpActivity.this, "已發送求救訊息", Toast.LENGTH_LONG).show();
-                //calling();
+                calling();
             }
         });
 
@@ -155,7 +155,7 @@ public class HelpActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    phoneno =userSnapshot.child("Tel").getValue(String.class);
+                    phoneno =userSnapshot.child("Tel").getValue(String.class).toString();
 
                 }
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneno));

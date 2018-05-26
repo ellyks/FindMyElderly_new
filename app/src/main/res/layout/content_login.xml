@@ -29,6 +29,7 @@
             android:textColor="#000000"
             android:maxLines="1"
             android:layout_width="match_parent"
+            android:inputType = "textPassword"
             android:layout_height="wrap_content" />
     </android.support.design.widget.TextInputLayout>
     <Button

@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Button add;
     private ImageButton homeButton;
     private Button map;
-    private TextView cc;
+    //private TextView cc;
     private String dateTime;
     //Google ApiClient
     //private GoogleApiClient googleApiClient;
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String userId = "";
     private String currentUserId;
 
-    private TextView batteryLV;
+    //private TextView batteryLV;
 
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 111;
@@ -117,9 +117,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         verbalButton = (ImageButton) findViewById(R.id.verbal);
         //logout = (Button) findViewById(R.id.logout);
         //add = (Button) findViewById(R.id.geofence);
-        cc = (TextView) findViewById(R.id.cc);
+        //cc = (TextView) findViewById(R.id.cc);
 
-        batteryLV = (TextView) findViewById(R.id.batteryLV);
+        //batteryLV = (TextView) findViewById(R.id.batteryLV);
         registerReceiver(this.batteryInformationReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void addGeofence(){//Geofences button Handler
         Log.w(TAG,"called la");
         if(!mGoogleApiClient.isConnected()){
-            Toast.makeText(this, getString(R.string.not_conected), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"已新增地理圍欄", Toast.LENGTH_SHORT).show();
             return ;
         }
         try {
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
 
-            batteryLV.setText("現在電力："+level+"%\n");
+            //batteryLV.setText("現在電力："+level+"%\n");
             if (!Integer.valueOf(level).equals(null)&&(level<=40 && level%5==0)){
                 mDatabase.child("users").child(user.getUid()).child("batteryLV").setValue(level);
                 getBattery(level);
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             latitude = Double.valueOf(intent.getStringExtra("latutide"));
             longitude = Double.valueOf(intent.getStringExtra("longitude"));
 
-            cc.setText("LOC:   "+latitude+" , "+longitude);
+            //cc.setText("LOC:   "+latitude+" , "+longitude);
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
             //added by alan, 11/12/2017
